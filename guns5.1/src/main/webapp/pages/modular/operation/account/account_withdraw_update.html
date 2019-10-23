@@ -1,0 +1,60 @@
+@layout("/common/_container.html",{bg:"bg-white",js:["/assets/modular/operation/account/account_withdraw_update.js"]}){
+<form id="withdrawUpdateForm" lay-filter="withdrawUpdateForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-block">
+            <input name="userName"  type="text" class="layui-input layui-disabled" disabled/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号</label>
+        <div class="layui-input-block">
+            <input name="loginName" type="text" class="layui-input layui-disabled" disabled/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发起时间</label>
+        <div class="layui-input-block">
+            <input name="orderTime" type="text" class="layui-input layui-disabled" disabled/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发起金额</label>
+        <div class="layui-input-block">
+            <input name="sponsorMoney" type="text" class="layui-input layui-disabled" disabled/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手续费</label>
+        <div class="layui-input-block">
+            <input name="commission" type="text" class="layui-input layui-disabled" disabled/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">应打款金额</label>
+        <div class="layui-input-block">
+            <input name="money" type="text" class="layui-input layui-disabled" disabled/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现状态</label>
+        <div class="layui-input-block">
+            <input lay-filter="payStatusRadio" type="radio" name="payStatus" value="WAITING_PROCESS" title="等待处理" checked/>
+            <input lay-filter="payStatusRadio" type="radio" name="payStatus" value="BEING_PROCESSED" title="处理中"/>
+            <input lay-filter="payStatusRadio" type="radio" name="payStatus" value="FAILURE" title="失败"/>
+            <input lay-filter="payStatusRadio" type="radio" name="payStatus" value="TRADE_SUCCESS" title="成功"/>
+        </div>
+    </div>
+    <div class="layui-form-item" style="display: none;" id="errorMsgDiv">
+        <label class="layui-form-label">失败原因</label>
+        <div class="layui-input-block">
+            <input name="errorMsg" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+    </div>
+</form>
+@}

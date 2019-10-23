@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.AccountMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id AS id,
+        a.login_name AS loginName,
+        a.money AS money,
+        a.pay_no AS payNo,
+        a.pay_status AS payStatus,
+        a.amount_type AS amountType,
+        a.pay_time AS payTime,
+        a.order_time AS orderTime,
+        a.rmb_money AS rmbMoney,
+        a.pay_msg AS payMsg,
+        a.pay_way AS payWay,
+        a.commission AS commission
+
+    </sql>
+
+    <select id="selectPayAmountRecord" resultType="map">
+        SELECT
+	        a.id,
+	        a.login_name loginName,
+	        a.order_time orderTime,
+	        a.pay_time payTime,
+	        b.create_time createTime,
+	        IFNULL(b.ditch,'未知') ditch,
+	        a.sponsor_money sponsorMoney,
+	        a.rmb_money rmbMoney,
+	        a.pay_way payWay,
+	        a.pay_status payStatus
+        FROM
+	        b_amount_record a
+        LEFT JOIN b_user b ON a.login_name = b.login_name
+        WHERE a.amount_type = 'PAY'
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (a.order_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        <if test="name != null and name != ''">
+            and a.login_name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="selectPayStatisticsAmountRecord" resultType="map">
+        SELECT
+            SUM(sponsor_money) sponsorMoney,
+            SUM(rmb_money) rmbMoney ,
+            SUM(IF(pay_status = 'TRADE_SUCCESS',1,0)) successNumber
+        FROM
+            b_amount_record
+        WHERE
+            amount_type = 'PAY'
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (order_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        <if test="name != null and name != ''">
+            and login_name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="selectWithdrawAmountRecord" resultType="map">
+        SELECT
+	        a.id,
+	        a.login_name loginName,
+	        c.recharge_amount rechargeAmount,
+	        a.commission commission,
+	        a.order_time orderTime,
+	        a.pay_time payTime,
+	        b.create_time createTime,
+	        IFNULL(b.ditch,'未知') ditch,
+	        a.money,
+	        a.sponsor_money sponsorMoney,
+	        a.exchange_rate exchangeRate,
+	        a.rmb_money rmbMoney,
+	        a.pay_status payStatus,
+	        a.amount_type amountType,
+	        a.batch_id batchId,
+	        b.bank_card bankCard,
+	        b.bank_of_deposit bankOfDeposit,
+	        b.branch,
+	        b.bank_address bankAddress
+        FROM
+	        b_amount_record a
+        LEFT JOIN b_user b ON a.login_name = b.login_name
+        LEFT JOIN b_user_amount c ON a.login_name = c.login_name
+        WHERE
+            a.amount_type = 'WITHDRAWAL'
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (a.order_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        <if test="name != null and name != ''">
+            and a.login_name like CONCAT('%',#{name},'%')
+        </if>
+        <if test="batchId != null and batchId != ''">
+            and a.batch_id like CONCAT('%',#{batchId},'%')
+        </if>
+    </select>
+
+    <select id="selectWithdrawStatisticsAmountRecord" resultType="map">
+        SELECT
+	        COUNT(id) withdrawUserNumber,
+	        SUM(IF (pay_status = 'TRADE_SUCCESS' || pay_status = 'FAILURE',1,0)) withdrawDoneNumber,
+	        SUM(sponsor_money) sumSponsorMoney,
+	        SUM(rmb_money) sumRmbMoney
+        FROM
+	        b_amount_record
+        WHERE
+	        amount_type = 'WITHDRAWAL'
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (order_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        <if test="name != null and name != ''">
+            and login_name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="selectByIds" resultType="WithdrawExcel">
+        SELECT
+	        a.id,
+	        a.login_name loginName,
+	        b.user_name userName,
+	        a.order_time orderTime,
+	        a.sponsor_money sponsorMoney,
+	        a.commission,
+	        b.bank_card bankCard,
+	        b.bank_of_deposit bankOfDeposit,
+	        b.branch
+        FROM
+	        b_amount_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        where
+            a.id in
+        <foreach item="id" index="index" collection="idList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and a.pay_status = 'WAITING_PROCESS'
+
+    </select>
+
+    <select id="getWithdrawExcelById" resultType="WithdrawExcel">
+    SELECT
+        a.id,
+        a.login_name loginName,
+        b.user_name userName,
+        a.order_time orderTime,
+        a.sponsor_money sponsorMoney,
+        a.commission,
+        b.bank_card bankCard,
+        b.bank_of_deposit bankOfDeposit,
+        b.branch,
+        a.pay_status payStatus,
+        a.pay_msg errorMsg
+    FROM
+        b_amount_record a
+    LEFT JOIN
+        b_user b ON a.login_name = b.login_name
+    where
+        a.amount_type = 'WITHDRAWAL'
+    and
+        a.pay_status != 'FAILURE'
+    and
+        a.pay_status != 'TRADE_SUCCESS'
+    and
+        a.id = #{id}
+    </select>
+
+</mapper>

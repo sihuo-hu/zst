@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.TransactionRecordMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.`id` AS id,
+        a.login_name AS loginName,
+        a.symbol_code AS symbolCode,
+        a.create_time AS createTime,
+        a.lot AS lot,
+        a.unit_price AS unitPrice,
+        a.money AS money,
+        a.overnight_fee AS overnightFee,
+        a.commission_charges AS commissionCharges,
+        a.transaction_status AS transactionStatus,
+        a.exponent AS exponent,
+        a.close_out_price AS closeOutPrice,
+        a.entry_orders_price AS entryOrdersPrice,
+        a.error_range AS errorRange,
+        a.entry_orders_strat_price AS entryOrdersStratPrice,
+        a.entry_orders_end_price AS entryOrdersEndPrice,
+        a.end_time AS endTime,
+        a.stop_loss_exponent AS stopLossExponent,
+        a.stop_profit_exponent AS stopProfitExponent,
+        a.stop_loss_count AS stopLossCount,
+        a.stop_profit_count AS stopProfitCount,
+        a.ransaction_type AS ransactionType,
+        a.is_overnight AS isOvernight,
+        a.profit AS profit,
+        a.entry_orders_time AS entryOrdersTime,
+        a.sell_status AS sellStatus,
+        IF(a.user_cash_coupon_id is  null,'否','是') AS userCashCouponId,
+        b.symbol_name AS symbolName,
+        c.ditch AS ditch
+    </sql>
+
+    <select id="selectTransactionRecords" resultType="map">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            b_transaction_record a
+        left join
+            b_symbol_info b on a.symbol_code = b.symbol_code
+        left join
+            b_user c on a.login_name = c.login_name
+        <where>
+            <if test="map.name != null and map.name != ''">
+                and a.login_name like CONCAT('%',#{map.name},'%')
+            </if>
+            <if test="map.transactionStatus != null and map.transactionStatus != ''">
+                and a.transaction_status = #{map.transactionStatus}
+            </if>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+              and (a.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+        order by
+            a.create_time desc
+    </select>
+
+    <select id="selectBuyStatistics" resultType="map">
+        SELECT
+	        SUM(commission_charges) commissionCharges,
+	        COUNT(id) buyNumber,
+	        SUM(lot) lotNumber,
+	        COUNT(DISTINCT login_name) userNumber,
+	        SUM(overnight_fee) overnightFee,
+	        SUM(money) moneyNumber
+        FROM
+	        b_transaction_record
+        WHERE
+	        transaction_status = 1
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectSellStatistics" resultType="map">
+        SELECT
+            COUNT(DISTINCT login_name) userNumber,
+            COUNT(id) sellNumber,
+            SUM(if(gross_profit &gt; 0 , gross_profit,0))+SUM(if(gross_profit &lt; 0 , gross_profit,0)) profitLossNumber,
+            SUM(money) moneyNumber,
+            SUM(if(gross_profit &gt; 0 , gross_profit,0)) profitNumber,
+            SUM(if(gross_profit &lt; 0 , gross_profit,0)) lossNumber,
+            SUM(commission_charges) commissionCharges,
+            SUM(lot) lotNumber,
+            SUM(overnight_fee) overnightFee
+        FROM
+            b_transaction_record
+        WHERE
+            transaction_status = 2
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectSellStatisticsProfitOrderNumber" resultType="map">
+        SELECT
+	        COUNT(id) profitOrderNumber
+        FROM
+	        b_transaction_record
+        WHERE
+	        transaction_status = 2
+        AND
+            gross_profit &gt; 0
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectSellStatisticsEqualityNumber" resultType="map">
+        SELECT
+            COUNT(id) equalityNumber
+        FROM
+            b_transaction_record
+        WHERE
+            transaction_status = 2
+        AND
+            gross_profit = 0
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+</mapper>

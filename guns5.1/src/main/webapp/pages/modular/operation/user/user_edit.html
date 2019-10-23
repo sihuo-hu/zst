@@ -1,0 +1,45 @@
+@layout("/common/_container.html",{bg:"bg-white",js:["/assets/modular/operation/user/user_edit.js"]}){
+<form id="appUserForm" lay-filter="appUserForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="loginName" placeholder="请输入手机号" type="text" class="layui-input" lay-verify="required"
+                   required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">昵称<span style="color: red;"></span>*</label>
+        <div class="layui-input-block">
+            <input name="nickname" placeholder="请输入昵称" type="text" class="layui-input"
+                   required/>
+        </div>
+    </div>
+    <input id="userImg" name="userImg" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">头像</label>
+        <div class="layui-input-block">
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" id="uploadImg1" style="height: 150px;width: 150px;">
+            </div>
+            <button type="button" class="layui-btn" id="upload1">上传头像</button><p id="uploadImgText1"></p>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">银行卡号</label>
+        <div class="layui-input-block">
+            <input name="bankCard" placeholder="请输入银行卡号" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开户行</label>
+        <div class="layui-input-block">
+            <input name="bankOfDeposit" placeholder="请输入开户行" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+    </div>
+</form>
+@}

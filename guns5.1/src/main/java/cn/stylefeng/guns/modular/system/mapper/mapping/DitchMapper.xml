@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.DitchMapper">
+
+    <select id="selectDitchStatistics" resultType="map">
+        SELECT
+            IFNULL(ditch,"未知") ditch,
+            COUNT(1) ditchUserNumber
+        FROM
+            b_user
+        <where>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+                and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+        GROUP BY ditch
+
+    </select>
+
+    <select id="selectMoneyUserNumber" resultType="map">
+        SELECT
+	        IFNULL(b.ditch,"未知") ditch,
+	        COUNT(DISTINCT a.login_name) moneyUserNumber
+        FROM
+	        b_transaction_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+	        a.user_cash_coupon_id IS NULL
+        AND (
+	        a.transaction_status = 1
+	        OR a.transaction_status = 2
+        )
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        GROUP BY
+	        b.ditch,
+	        a.login_name
+    </select>
+
+    <select id="selectMoneyStatistics" resultType="map">
+        SELECT
+            IFNULL(b.ditch,"未知") ditch,
+	        COUNT(a.id) moneyNumber,
+	        SUM(a.money) moneySum
+        FROM
+	        b_transaction_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+	        a.user_cash_coupon_id IS NULL
+        AND (
+	        a.transaction_status = 1
+	        OR a.transaction_status = 2
+        )
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        GROUP BY
+            b.ditch
+    </select>
+
+    <select id="selectCashUserNumber" resultType="map">
+        SELECT
+	        IFNULL(b.ditch, "未知") ditch,
+	        COUNT(DISTINCT a.login_name) cashUserNumber
+        FROM
+	        b_user_cash_coupon a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+	        a.order_id IS NULL
+        AND
+            NOW() between a.start_time AND a.past_due_time
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        GROUP BY
+            b.ditch
+    </select>
+
+    <select id="selectCashStatistics" resultType="map">
+        SELECT
+	        IFNULL(b.ditch, "未知") ditch,
+	        COUNT(a.id) cashNumber,
+	        SUM(a.money) cashMoneySum
+        FROM
+	        b_transaction_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+	        a.user_cash_coupon_id IS NOT NULL
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        GROUP BY
+	        b.ditch
+    </select>
+
+    <select id="selectPayAll" resultType="map">
+        SELECT
+	        IFNULL(b.ditch, "未知") ditch,
+	        COUNT(1) payAllNumber
+        FROM
+	        b_amount_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+            a.amount_type = 'PAY'
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+                and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        GROUP BY
+	        b.ditch
+    </select>
+
+    <select id="selectPaySuccess" resultType="map">
+        SELECT
+	        IFNULL(b.ditch, "未知") ditch,
+	        COUNT(1) paySuccessNumber,
+	        SUM(a.rmb_money) payMoney
+        FROM
+	        b_amount_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+            a.pay_status = 'TRADE_SUCCESS'
+        and
+            a.amount_type = 'PAY'
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        GROUP BY
+	        b.ditch
+    </select>
+
+    <select id="selectPayClosed" resultType="map">
+        SELECT
+            IFNULL(b.ditch, "未知") ditch,
+            COUNT(1) payClosedNumber
+        FROM
+            b_amount_record a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+            a.pay_status != 'TRADE_SUCCESS'
+        and
+            a.amount_type = 'PAY'
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+        GROUP BY
+        b.ditch
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.UserAmountMapper">
+
+    <select id="getAccountInfoById" resultType="UserAccountInfo">
+        SELECT
+            a.login_name loginName,
+            b.user_name userName,
+            a.balance,
+            a.recharge_amount rechargeAmount,
+            a.withdraw_amount withdrawAmount,
+            b.bank_card bankCard,
+            b.bank_of_deposit bankOfDeposit,
+            b.branch
+        FROM
+            b_user_amount a
+        LEFT JOIN
+            b_user b ON a.login_name = b.login_name
+        WHERE
+            a.login_name = #{loginName}
+    </select>
+
+</mapper>

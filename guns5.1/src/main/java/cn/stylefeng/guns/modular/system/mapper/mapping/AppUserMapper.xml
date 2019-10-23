@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.AppUserMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id` AS id,
+        login_name AS loginName,
+        password AS password,
+        create_time AS createTime,
+        user_name AS userName,
+        public_key AS publicKey,
+        nickname AS nickname,
+        user_img AS userImg,
+        gender AS gender,
+        birthdate AS birthdate,
+        id_number AS idNumber,
+        card_front AS cardFront,
+        card_reverse AS cardReverse,
+        audit_status AS auditStatus,
+        bank_card AS bankCard,
+        user_status AS userStatus,
+        bank_of_deposit AS bankOfDeposit
+    </sql>
+
+    <select id="selectUsers" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from b_user
+        <where>
+            <if test="name != null and name != ''">
+                and (login_name like CONCAT('%',#{name},'%')
+                or user_name like CONCAT('%',#{name},'%')
+                or id_number like CONCAT('%',#{name},'%'))
+            </if>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+              and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+        order by
+            create_time desc
+    </select>
+
+
+
+</mapper>

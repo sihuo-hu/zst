@@ -1,0 +1,89 @@
+@layout("/common/_container.html",{bg:"bg-white",js:["/assets/modular/operation/opportunities/opportunities_edit.js"]}){
+<form id="opportunitiesForm" lay-filter="opportunitiesForm" class="layui-form model-form">
+    <input name="id" type="hidden"/>
+    <input id="userImg" name="userImg" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">专家头像</label>
+        <div class="layui-input-block">
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" id="uploadImg1" style="height: 70px;width: 70px;">
+            </div>
+            <button type="button" class="layui-btn" id="upload1">专家头像</button><p id="uploadImgText1"></p>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">专家名称<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="userName" placeholder="请输入专家名称" type="text" class="layui-input" lay-verify="required"
+                   required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">产品名称<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="symbolName" placeholder="请输入产品名称" type="text" class="layui-input" lay-verify="required"
+                   required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作方式<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="operatingMode" placeholder="买涨/买跌/做空......" type="text" class="layui-input"
+                   lay-verify="required"
+                   required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发布时间</label>
+        <div class="layui-input-block">
+            <input id="birthday" name="createTime" placeholder="请输入发布时间" type="text" class="layui-input"
+                   autocomplete="off"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="title" placeholder="请输入标题" type="text" class="layui-input" lay-verify="required" required/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">专家建议<span style="color: red;">*</span></label>
+        <div class="layui-input-block">
+            <input name="themeText" placeholder="请输入专家建议" type="text" class="layui-input" lay-verify="required"
+                   required />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">买涨百分比</label>
+        <div class="layui-input-block">
+            <input name="risePercentage" placeholder="请输入买张百分比" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">基本分析</label>
+        <div class="layui-input-block">
+            <input name="foundationAnalysis" placeholder="请输入基本分析" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">技术面分析</label>
+        <div class="layui-input-block">
+            <input name="technologicalAnalysis" placeholder="请输入基本分析" type="text" class="layui-input"/>
+        </div>
+    </div>
+    <input id="technologicalAnalysisImg" name="technologicalAnalysisImg" type="hidden"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">技术面分析图片</label>
+        <div class="layui-input-block">
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" id="uploadImg2" style="height: 70px;width: 120px;">
+            </div>
+            <button type="button" class="layui-btn" id="upload2">技术面分析图片</button><p id="uploadImgText2"></p>
+        </div>
+    </div>
+    <div class="layui-form-item text-right">
+        <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+        <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+    </div>
+</form>
+@}

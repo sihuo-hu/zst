@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.UserCashCouponMapper">
+
+    <select id="selectUserCashCoupon" resultType="map">
+        SELECT
+            a.id,
+            c.login_name AS loginName,
+            a.cc_money AS ccMoney,
+            c.create_time AS userCreateTime,
+            b.cc_name AS ccName,
+            d.create_time AS pushTime,
+            IF (a.order_id IS NULL,'未使用','已使用') AS useStatus,
+            IF (e.profit IS NULL,0.0,e.profit) AS profit,
+            c.ditch AS ditch,
+            a.start_time AS startTime,
+            a.past_due_time AS pastDueTime
+        FROM
+            b_user_cash_coupon a
+        LEFT JOIN b_cash_coupon b ON a.cash_coupon_id = b.id
+        LEFT JOIN b_user c ON a.login_name = c.login_name
+        LEFT JOIN b_cash_coupon_push_log d ON a.cash_coupon_push_log_id = d.id
+        LEFT JOIN b_transaction_record e ON e.user_cash_coupon_id = a.id
+        <where>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+                and (d.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+            <if test="loginName != null and loginName != ''">
+                and a.login_name like CONCAT('%',#{loginName},'%')
+            </if>
+        </where>
+        ORDER BY
+        d.create_time DESC,
+        a.create_time DESC
+    </select>
+
+    <select id="selectUserCashCouponStatistics" resultType="map">
+        SELECT
+            COUNT( DISTINCT login_name) cashCouponPNumber,
+            COUNT(id) allNumber
+        FROM
+            b_user_cash_coupon
+        <where>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+                and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectUnused" resultType="map">
+        SELECT
+            COUNT(id) unused
+        FROM
+            b_user_cash_coupon
+        WHERE
+            order_id IS NULL
+            AND past_due_time &gt; NOW()
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectUsed" resultType="map">
+        SELECT
+            COUNT(id) used
+        FROM
+            b_user_cash_coupon
+        WHERE
+            order_id IS NOT NULL
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectPastDue" resultType="map">
+        SELECT
+            COUNT(id) pastDueNumber
+        FROM
+            b_user_cash_coupon
+        WHERE
+            order_id IS NULL
+            AND past_due_time &lt; NOW()
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectProfit" resultType="map">
+        SELECT
+            IFNULL(SUM(a.profit),0) profit
+        FROM
+            b_transaction_record a
+        LEFT JOIN b_user_cash_coupon b ON a.id = b.order_id
+        WHERE
+            b.id IS NOT NULL
+            AND a.profit &gt; 0
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+
+    <select id="selectLoss" resultType="map">
+        SELECT
+        IFNULL(SUM(a.profit),0) loss
+        FROM
+        b_transaction_record a
+        LEFT JOIN b_user_cash_coupon b ON a.id = b.order_id
+        WHERE
+        b.id IS NOT NULL
+        AND a.profit &lt; 0
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and (b.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+        </if>
+    </select>
+</mapper>

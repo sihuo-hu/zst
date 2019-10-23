@@ -1,0 +1,65 @@
+@layout("/common/_container.html",{plugins:["ztree"],js:["/assets/modular/operation/opportunities/opportunities.js"]}){
+
+<div class="layui-body-header">
+    <span class="layui-body-header-title">交易机会管理</span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <!--<div class="layui-col-sm12 layui-col-md3 layui-col-lg2">-->
+            <!--<div class="layui-card">-->
+                <!--<div class="layui-card-body mini-bar">-->
+                    <!--<div class="ztree" id="deptTree"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="layui-col-sm15 layui-col-md12 layui-col-lg13">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <input id="name" class="layui-input" type="text" placeholder="产品名称"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="timeLimit" class="layui-input" type="text" placeholder="创建时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                @if(shiro.hasPermission("/opportunities/add")){
+                                <button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
+                                @}
+                                <button id="btnExp" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="opportunitiesTable" lay-filter="opportunitiesTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="tableBar">
+    @if(shiro.hasPermission("/user/edit")){
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    @}
+</script>
+<script type="text/html" id="userImgUrl">
+    <img  lay-filter="cardFront" src="{{d.userImg}}">
+</script>
+<script type="text/html" id="technologicalAnalysisUrl">
+    <img  lay-filter="cardReverse" src="{{d.technologicalAnalysisImg}}">
+</script>
+<script type="text/html" id="oStatusTpl">
+    <input type="checkbox" lay-filter="oStatus" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" {{d.oStatus=='ENABLE'?'checked':''}} />
+</script>
+<style type="text/css">
+    th .layui-table-cell{
+        height: auto;
+        overflow:visible;
+        text-overflow:inherit;
+        white-space:normal;
+    }
+</style>
+@}

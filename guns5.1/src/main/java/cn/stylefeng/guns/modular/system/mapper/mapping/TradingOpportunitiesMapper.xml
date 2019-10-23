@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.TradingOpportunitiesMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id` AS id,
+        user_img AS userImg,
+        user_name AS userName,
+        symbol_name AS symbolName,
+        operating_mode AS operatingMode,
+        create_time AS createTime,
+        title AS title,
+        theme_text AS themeText,
+        rise_percentage AS risePercentage,
+        foundation_analysis AS foundationAnalysis,
+        technological_analysis AS technologicalAnalysis,
+        technological_analysis_img AS technologicalAnalysisImg,
+        opportunties_status AS oStatus
+    </sql>
+
+    <select id="selectTradingOpportunities" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from b_trading_opportunities
+        <where>
+            <if test="name != null and name != ''">
+                and (symbol_name like CONCAT('%',#{name},'%'))
+            </if>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+              and (create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+        order by create_time DESC
+    </select>
+
+
+
+</mapper>

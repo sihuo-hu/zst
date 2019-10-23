@@ -1,0 +1,59 @@
+@layout("/common/_container.html",{plugins:["ztree"],js:["/assets/modular/operation/switch/switch.js"]}){
+
+<div class="layui-body-header">
+    <span class="layui-body-header-title">版本管理</span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <!--<div class="layui-col-sm12 layui-col-md3 layui-col-lg2">-->
+            <!--<div class="layui-card">-->
+                <!--<div class="layui-card-body mini-bar">-->
+                    <!--<div class="ztree" id="deptTree"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="layui-col-sm15 layui-col-md12 layui-col-lg13">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <input id="ditch" class="layui-input" type="text" placeholder="渠道编码"/>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                @if(shiro.hasPermission("/switch/add")){
+                                <button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
+                                @}
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="switchTable" lay-filter="switchTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="transactionTpl">
+    <input type="checkbox" lay-filter="transaction" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" {{d.transaction=='OPEN'?'checked':''}} />
+</script>
+<script type="text/html" id="capitalTpl">
+    <input type="checkbox" lay-filter="capital" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" {{d.capital=='OPEN'?'checked':''}} />
+</script>
+<style type="text/css">
+    th .layui-table-cell{
+        height: auto;
+    }
+    .layui-table-cell {
+        line-height: 28px;
+        padding: 0 15px;
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        box-sizing: border-box;
+    }
+</style>
+@}

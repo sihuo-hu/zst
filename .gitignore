@@ -21,3 +21,10 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+*.iml
+guns5.1/.idea/
+guns5.1/target/
+royal-cart-springboot/.idea/
+royal-cart-springboot/target/
+royal-cart-springboot/src/test/
+guns5.1/src/test/

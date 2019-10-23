@@ -1,0 +1,52 @@
+@layout("/common/_container.html",{plugins:["ztree"],js:["/assets/modular/operation/transaction/transaction.js"]}){
+
+<div class="layui-body-header">
+    <span class="layui-body-header-title">持仓列表</span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <!--<div class="layui-col-sm12 layui-col-md3 layui-col-lg2">-->
+            <!--<div class="layui-card">-->
+                <!--<div class="layui-card-body mini-bar">-->
+                    <!--<div class="ztree" id="deptTree"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="layui-col-sm15 layui-col-md12 layui-col-lg13">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <input id="name" class="layui-input" type="text" placeholder="手机号"/>
+                            </div>
+                            <div class="layui-inline">
+                                <input id="timeLimit" class="layui-input" type="text" placeholder="交易时间"/>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="transactionTable" lay-filter="transactionTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    th .layui-table-cell{
+        height: auto;
+    }
+    .layui-table-cell {
+        line-height: 28px;
+        padding: 0 15px;
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        box-sizing: border-box;
+    }
+</style>
+@}

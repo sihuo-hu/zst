@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.modular.system.mapper.SymbolInfoMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id AS id,
+        cc_name AS ccName,
+        cc_money AS ccMoney,
+        cc_scope_id AS ccScopeId,
+        grant_mode AS grantMode,
+        past_due_time AS pastDueTime,
+        past_due_day AS pastDueDay,
+        cc_explain AS ccExplain,
+        start_time AS startTime,
+        create_time AS createTime,
+        grant_condition AS grantCondition,
+        amount_to_mark AS amountToMark
+    </sql>
+
+    <select id="selectCashCoupon" resultType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from b_cash_coupon
+        <where>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+              and (a.create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="getSymbolCodeAndSymbolName" resultType="cn.stylefeng.guns.modular.system.model.SymbolDto">
+        select
+            symbol_name symbolName,
+            symbol_code symbolCode
+        from
+            b_symbol_info
+        where
+            status = 1
+        order by  symbol_code
+    </select>
+
+
+
+</mapper>
