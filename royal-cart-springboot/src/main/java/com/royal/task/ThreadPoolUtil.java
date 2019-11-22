@@ -43,20 +43,20 @@ public class ThreadPoolUtil {
                         for (TransactionRecord transactionRecord : list) {
                             try {
                                 String sellStatus = "";
-                                if(transactionRecord.getRansactionType()==1){
-                                    if(transactionRecord.getStopLossExponent().compareTo(symbolRecord.getPrice())>=0){
-                                        sellStatus= SellStatusEnum.LOSS.getKey();
-                                    }else{
-                                        sellStatus= SellStatusEnum.PROFIT.getKey();
+                                if (transactionRecord.getRansactionType() == 1) {
+                                    if (transactionRecord.getStopLossExponent().compareTo(symbolRecord.getPrice()) >= 0) {
+                                        sellStatus = SellStatusEnum.LOSS.getKey();
+                                    } else {
+                                        sellStatus = SellStatusEnum.PROFIT.getKey();
                                     }
-                                }else{
-                                    if(transactionRecord.getStopLossExponent().compareTo(symbolRecord.getPrice())<=0){
-                                        sellStatus= SellStatusEnum.LOSS.getKey();
-                                    }else{
-                                        sellStatus= SellStatusEnum.PROFIT.getKey();
+                                } else {
+                                    if (transactionRecord.getStopLossExponent().compareTo(symbolRecord.getPrice()) <= 0) {
+                                        sellStatus = SellStatusEnum.LOSS.getKey();
+                                    } else {
+                                        sellStatus = SellStatusEnum.PROFIT.getKey();
                                     }
                                 }
-                                transactionRecordService.constraintSell(transactionRecord, symbolRecord.getPrice(),sellStatus);
+                                transactionRecordService.constraintSell(transactionRecord, symbolRecord.getPrice(), sellStatus);
                             } catch (Exception e) {
                                 transactionRecord.setLockTime(null);
                                 transactionRecordService.update(transactionRecord);
